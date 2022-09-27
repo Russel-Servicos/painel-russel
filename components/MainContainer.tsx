@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 const RusselMainContainer = styled(Box)<BoxProps>(({ theme }) => ({
   padding: `0 ${theme.spacing(10)}`,
   marginTop: theme.spacing(10),
+  marginBottom: theme.spacing(10),
 }));
 
 interface Props {
