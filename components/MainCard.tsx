@@ -13,6 +13,10 @@ const RusselMainCardIconBox = styled("i")(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  "& svg": {
+    minWidth: 32,
+    minHeight: 32,
+  },
 }));
 
 export const MainCardIconBox = ({
@@ -49,6 +53,7 @@ const MainCard = ({
         }}
       >
         {icon}
+
         <Box display={"flex"} flexDirection={"column"}>
           <Typography variant="title3" sx={{ fontWeight: "medium" }}>
             {title}
