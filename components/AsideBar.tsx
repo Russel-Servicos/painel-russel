@@ -22,8 +22,7 @@ import getAsideBarMenu from "../services/getAsideBarMenu";
 const RusselAsideBar = styled(Box)<BoxProps>(({ theme }) => ({
   padding: "40px 0",
   minWidth: 240,
-  maxHeight: 900,
-  height: "100%",
+  height: "100vh",
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
