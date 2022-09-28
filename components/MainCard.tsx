@@ -50,6 +50,7 @@ const MainCard = ({
           "&:hover": { backgroundColor: theme.palette.neutral?.[4] },
           boxShadow: "none",
           borderRadius: theme.spacing(2),
+          alignItems: "center",
         }}
       >
         {icon}
