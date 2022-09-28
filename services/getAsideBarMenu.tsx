@@ -9,6 +9,11 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LockIcon from "@mui/icons-material/Lock";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import HelpIcon from "@mui/icons-material/Help";
+import StarRateIcon from "@mui/icons-material/StarRate";
 
 export default () => {
   let { pathname } = useRouter();
@@ -51,6 +56,45 @@ const getAsideBarMenuLlist = (path: string) => {
               <AsideBarAccordionLink href="/" text="SMTP" />
               <AsideBarAccordionLink href="/" text="Banco de dados" />
               <AsideBarAccordionLink href="/" text="Chaves de API" />
+            </AsideBarAccordion>
+          </ListItem>
+        </>
+      );
+    case "ecommerce":
+      return (
+        <>
+          <ListItem disablePadding>
+            <AsideBarLink
+              icon={<ReceiptIcon />}
+              text={"pedidos"}
+              href={"/ecommerce/pedidos"}
+            />
+          </ListItem>
+          <ListItem disablePadding>
+            <AsideBarAccordion icon={<LocalOfferIcon />} text={"produtos"}>
+              <AsideBarAccordionLink text="Lista de produtos" href="/" />
+              <AsideBarAccordionLink text="Adicionar produto" href="/" />
+            </AsideBarAccordion>
+          </ListItem>
+          <ListItem disablePadding>
+            <AsideBarAccordion
+              icon={<FormatListBulletedIcon />}
+              text={"categorias"}
+            >
+              <AsideBarAccordionLink text="Lista de categorias" href="/" />
+              <AsideBarAccordionLink text="Adicionar categoria" href="/" />
+            </AsideBarAccordion>
+          </ListItem>
+          <ListItem disablePadding>
+            <AsideBarAccordion icon={<HelpIcon />} text={"faqs"}>
+              <AsideBarAccordionLink text="Lista de FAQs" href="/" />
+              <AsideBarAccordionLink text="Adicionar FAQ" href="/" />
+            </AsideBarAccordion>
+          </ListItem>
+          <ListItem disablePadding>
+            <AsideBarAccordion icon={<StarRateIcon />} text={"parcerias"}>
+              <AsideBarAccordionLink text="Parceiros" href="/" />
+              <AsideBarAccordionLink text="Produtos" href="/" />
             </AsideBarAccordion>
           </ListItem>
         </>
