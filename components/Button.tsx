@@ -31,6 +31,10 @@ export const Button = styled(RusselButton)(({ theme }) => ({
   "&:active": {
     backgroundColor: theme.palette.russel?.dark,
   },
+  "&:disabled": {
+    backgroundColor: theme.palette.neutral?.[4],
+    color: theme.palette.neutral?.[5],
+  },
 }));
 
 export const LightButton = styled(RusselButton)(({ theme }) => ({
