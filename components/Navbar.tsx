@@ -75,8 +75,9 @@ const Navbar = ({ username }: Props) => {
 
   const getIconsGroup = () => {
     const iconsGroup = [
-      <AppsIcon />,
+      <AppsIcon key={0} />,
       <Box
+        key={1}
         display={"flex"}
         component={"div"}
         sx={{
@@ -88,8 +89,9 @@ const Navbar = ({ username }: Props) => {
         <NotificationsNoneIcon className="notification-none" />
         <NotificationsIcon className="notification" />
       </Box>,
-      <SettingsIcon />,
+      <SettingsIcon key={2} />,
       <Box
+        key={3}
         display={"flex"}
         component={"div"}
         alignItems={"center"}
