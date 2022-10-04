@@ -60,15 +60,16 @@ const columns: GridColDef[] = [
     flex: 0.6,
     align: "center",
     headerAlign: "center",
-    renderCell: (props: GridRenderCellParams<Date>) => {
+    renderCell: (props) => {
       const { value } = props;
+      const date = new Date(value);
       return (
         value && (
           <div style={{ textAlign: "center" }}>
             <Typography variant="paragraph" className="clamp">
-              {value?.getDate()}/{value?.getMonth() + 1}/{value?.getFullYear()}
+              {date?.getDate()}/{date?.getMonth() + 1}/{date?.getFullYear()}
               <br />
-              às {value?.getHours()}:{value?.getMinutes()}
+              às {date?.getHours()}:{date?.getMinutes()}h
             </Typography>
           </div>
         )
@@ -131,15 +132,17 @@ const columns: GridColDef[] = [
   },
 ];
 
-export interface OrdersDataGridProps {
-  rows: Array<{
-    id: string;
-    date: Date;
-    client: string;
-    payment: number;
-    status: string;
-    total: number;
-  }>;
+interface OrdersDataGridProps {
+  rows: Array<OrdersDataGridRowsProps>;
+}
+
+export interface OrdersDataGridRowsProps {
+  id: string;
+  date: string;
+  client: string;
+  payment: number;
+  status: string;
+  total: number;
 }
 
 const OrdersDataGrid = ({ rows }: OrdersDataGridProps) => {
