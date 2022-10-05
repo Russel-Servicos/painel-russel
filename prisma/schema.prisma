@@ -1,0 +1,413 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model attachments {
+  id         BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  file_id    Int
+  table_name String @db.VarChar(60)
+  table_id   Int
+}
+
+model categorias {
+  id        BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  criado_em DateTime   @default(now()) @db.Timestamp(0)
+  nome      String?    @db.VarChar(80)
+  produtos  produtos[]
+}
+
+model ec_adverts {
+  id            BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  name          String        @db.VarChar(80)
+  price         Float         @db.Float
+  description   String?       @db.VarChar(250)
+  url           String        @db.VarChar(200)
+  clicks        Int           @db.UnsignedInt
+  stars         Int           @db.UnsignedInt
+  status        Int           @db.UnsignedInt
+  image         Int?          @db.UnsignedInt
+  hour_long     Int           @db.UnsignedInt
+  category_id   BigInt        @db.UnsignedBigInt
+  ec_categories ec_categories @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "fk_category_id")
+
+  @@index([category_id], map: "fk_category_id")
+}
+
+model ec_categories {
+  id          BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String       @db.VarChar(80)
+  category_id Int          @db.UnsignedInt
+  description String?      @db.VarChar(250)
+  status      Int          @default(1) @db.UnsignedInt
+  ec_adverts  ec_adverts[]
+}
+
+model ec_discounts {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  code        String   @db.VarChar(20)
+  description String   @db.VarChar(250)
+  status      Int      @default(1) @db.UnsignedInt
+  start_date  DateTime @db.Date
+  end_date    DateTime @db.Date
+  type        Int      @default(1) @db.UnsignedInt
+  value       Float    @db.Float
+  start_value Float    @db.Float
+  total       Int      @db.UnsignedInt
+  used_total  Int      @db.UnsignedInt
+  payload     String?  @db.MediumText
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+model partners {
+  id       Int      @id @default(autoincrement())
+  name     String?  @db.VarChar(100)
+  users_id Int?
+  date     DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([users_id], map: "INDEX")
+}
+
+model partners_products {
+  id                Int       @id @default(autoincrement())
+  type              Int
+  code              String?   @db.VarChar(20)
+  barcode           String?   @db.VarChar(20)
+  product_order     Int?      @default(0)
+  product_show      Int?      @default(0)
+  status            Int       @default(0)
+  product_new       Int?      @default(0)
+  name              String    @db.VarChar(100)
+  description       String?   @db.VarChar(250)
+  price             Float     @default(0.00) @db.Float
+  promotional_price Float?    @db.Float
+  keywords          String?   @db.VarChar(250)
+  quantity          Int?      @default(0)
+  stock             Int?      @default(0)
+  image             Int?
+  on_date           DateTime? @db.Date
+  off_date          DateTime? @db.Date
+  created_in        DateTime  @default(now()) @db.Timestamp(0)
+  link              String    @db.VarChar(255)
+  tax_category      Int?
+  link_show         Int
+  slug              String?   @db.VarChar(50)
+  date              String    @db.VarChar(100)
+}
+
+model produtos {
+  id           BigInt     @id @default(autoincrement()) @db.UnsignedBigInt
+  nome         String?    @db.VarChar(80)
+  categoria_id BigInt     @db.UnsignedBigInt
+  categorias   categorias @relation(fields: [categoria_id], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "fk_categoria_id")
+
+  @@index([categoria_id], map: "fk_categoria_id")
+}
+
+model so_categories {
+  id             Int       @id @default(autoincrement())
+  name           String    @db.VarChar(100)
+  category_order Int?      @default(0)
+  category_id    Int?
+  status         Int?      @default(0)
+  type           Int?      @default(1)
+  color          String?   @db.VarChar(30)
+  category_show  Int?      @default(0)
+  image          Int?
+  description    String?   @db.VarChar(250)
+  description2   String?   @db.VarChar(250)
+  keywords       String?   @db.VarChar(150)
+  category_new   Int?      @default(0)
+  created_in     DateTime  @default(now()) @db.Timestamp(0)
+  slug           String?   @db.VarChar(50)
+  code           String    @db.VarChar(80)
+  so_faqs        so_faqs[]
+}
+
+model so_categories_itens {
+  id          Int         @id @default(autoincrement())
+  product_id  Int
+  category_id Int
+  so_products so_products @relation(fields: [product_id], references: [id], onDelete: Cascade, map: "so_categories_itens_ibfk_1")
+
+  @@index([category_id], map: "category_id")
+  @@index([product_id], map: "product_id")
+}
+
+model so_faqs {
+  id            Int           @id @default(autoincrement())
+  faq_code      String        @db.VarChar(20)
+  faq_order     Int?
+  faq_question  String        @db.VarChar(250)
+  faq_reply     String        @db.VarChar(250)
+  category_id   Int
+  faq_status    Int
+  so_categories so_categories @relation(fields: [category_id], references: [id], onUpdate: Restrict, map: "fk_category")
+
+  @@index([category_id], map: "fk_category")
+}
+
+model so_gallery {
+  id            Int     @id @default(autoincrement())
+  code          String? @db.VarChar(70)
+  name          String  @db.VarChar(150)
+  description   String? @db.VarChar(250)
+  type          Int?
+  status        Int?    @default(1)
+  link_text     String? @db.VarChar(100)
+  link_value    String? @db.VarChar(200)
+  file_id       Int?
+  order_gallery Int?    @default(1)
+}
+
+model so_gallery_items {
+  id          Int     @id @default(autoincrement())
+  file_id     Int?
+  gallery_id  Int
+  register_id Int
+  item_order  Int?    @default(1)
+  item_link   String? @db.VarChar(80)
+  status      Int?    @default(1)
+  name        String  @db.VarChar(150)
+  description String  @db.VarChar(250)
+}
+
+model so_itens {
+  id          Int         @id @default(autoincrement())
+  name        String      @db.VarChar(255)
+  amount      Int
+  id_request  Int
+  price       Float       @db.Float
+  id_product  Int?
+  code        Int
+  descricao   String      @db.VarChar(255)
+  modality    Int?
+  period      Int?
+  so_requests so_requests @relation(fields: [id_request], references: [id], onDelete: Cascade, map: "so_itens_ibfk_1")
+
+  @@index([id_request], map: "request_id")
+}
+
+model so_links {
+  id          Int     @id @default(autoincrement())
+  code        String? @db.VarChar(20)
+  name        String  @db.VarChar(80)
+  url         String  @db.VarChar(200)
+  target      Int?    @default(0)
+  type        Int?    @default(0)
+  status      Int?    @default(0)
+  menu_status Int?    @default(0)
+  menu_order  Int?    @default(1)
+  new_link    Int?    @default(0)
+  link_id     Int?    @default(0)
+}
+
+model so_prices {
+  id                 BigInt   @id @default(autoincrement())
+  jornada_trabalho   Int?
+  escala             Int?
+  tipo_contratacao   Int?
+  piso               Float?   @db.Float
+  adc_noturno        Float?   @db.Float
+  despesas           Float?   @db.Float
+  valor_uniformes    Float?   @db.Float
+  adc_insalubridade  Float?   @db.Float
+  adc_periculosidade Float?   @db.Float
+  valor_alimentacao  Float?   @db.Float
+  valor_seguro_vida  Float?   @db.Float
+  valor_transporte   Float?   @db.Float
+  percentual_lucro   Float?   @db.Float
+  percentual_r_s     Float?   @db.Float
+  adc_name_1         String?  @db.VarChar(80)
+  adc_name_2         String?  @db.VarChar(80)
+  adc_name_3         String?  @db.VarChar(80)
+  adc_name_4         String?  @db.VarChar(80)
+  adc_name_5         String?  @db.VarChar(80)
+  adc_value_1        Float?   @db.Float
+  adc_value_2        Float?   @db.Float
+  adc_value_3        Float?   @db.Float
+  adc_value_4        Float?   @db.Float
+  adc_value_5        Float?   @db.Float
+  unit_price         Float?   @db.Float
+  product_id         BigInt?
+  created_in         DateTime @default(now()) @db.DateTime(0)
+}
+
+model so_products {
+  id                  Int                   @id @default(autoincrement())
+  type                Int
+  code                String?               @db.VarChar(20)
+  barcode             String?               @db.VarChar(20)
+  product_order       Int?                  @default(0)
+  product_show        Int?                  @default(0)
+  status              Int                   @default(0)
+  product_new         Int?                  @default(0)
+  name                String                @db.VarChar(100)
+  description         String?               @db.VarChar(250)
+  price               Float                 @default(0.00) @db.Float
+  promotional_price   Float?                @db.Float
+  keywords            String?               @db.VarChar(250)
+  quantity            Int?                  @default(0)
+  stock               Int?                  @default(0)
+  image               Int?
+  on_date             DateTime?             @db.Date
+  off_date            DateTime?             @db.Date
+  created_in          DateTime              @default(now()) @db.Timestamp(0)
+  link                String                @db.VarChar(255)
+  tax_category        Int?
+  link_show           Int
+  slug                String?               @db.VarChar(50)
+  date                String                @db.VarChar(100)
+  so_categories_itens so_categories_itens[]
+}
+
+model so_requests {
+  id                    Int        @id @default(autoincrement())
+  delivery_date         DateTime?  @db.Date
+  status                String?    @default("created") @db.VarChar(30)
+  created_at            DateTime?  @default(now()) @db.Timestamp(0)
+  address_id            Int
+  payment_form          Int
+  code                  String     @db.VarChar(20)
+  user_id               BigInt     @db.UnsignedBigInt
+  items                 Json?
+  discount              Float?     @default(0.00) @db.Float
+  taxa                  Float?     @default(0.00) @db.Float
+  total                 Float      @default(0.00) @db.Float
+  type                  String?    @db.VarChar(10)
+  sign_url              String?    @db.VarChar(250)
+  due_date              DateTime?  @db.Date
+  due_day               Int
+  payment_date          DateTime?  @db.DateTime(0)
+  gateway_boleto_qrcode String?    @db.VarChar(250)
+  gateway_barcode       String?    @db.VarChar(250)
+  recurring_transaction Int?       @default(0)
+  so_itens              so_itens[]
+  enterprise            users_entreprises @relation(fields: [user_id], references: [id_user])
+}
+
+model so_taxes {
+  id              Int    @id @default(autoincrement())
+  tax_name        String @db.VarChar(100)
+  tax_description String @db.VarChar(250)
+  tax_value       Float  @db.Float
+  tax_status      Int?   @default(0)
+  tax_type        Int?   @default(1)
+  category_id     Int
+
+  @@index([category_id], map: "fk_category")
+}
+
+model tokens {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  role       String    @db.VarChar(10)
+  status     String    @db.VarChar(10)
+  created_in DateTime? @db.DateTime(0)
+  token      String    @db.VarChar(70)
+}
+
+model uploads {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  path        String   @db.VarChar(200)
+  description String   @db.VarChar(100)
+  type        String   @db.VarChar(5)
+  ceated_in   DateTime @default(now()) @db.Timestamp(0)
+  folder_id   Int?
+}
+
+model uploads_folders {
+  id   BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  name String @db.VarChar(80)
+}
+
+model users {
+  id                BigInt              @id @default(autoincrement()) @db.UnsignedBigInt
+  role              String              @db.VarChar(15)
+  pin               Int?
+  type              Int?                @default(1)
+  code              String?             @db.VarChar(20)
+  name              String              @db.VarChar(50)
+  email             String              @db.VarChar(70)
+  lang              String?             @db.VarChar(5)
+  image             String?             @db.VarChar(100)
+  status            String?             @db.VarChar(15)
+  privacy           String?             @default("public") @db.VarChar(10)
+  credit            Int?                @default(0)
+  password          String              @db.VarChar(62)
+  accept_terms      String              @default("off") @db.VarChar(3)
+  email_marketing   String?             @default("off") @db.VarChar(3)
+  theme             String              @default("black") @db.VarChar(10)
+  timezone          String              @default("America/Sao_Paulo") @db.VarChar(50)
+  autobiography     String?             @db.VarChar(250)
+  created_in        DateTime            @default(now()) @db.DateTime(0)
+  users_addresses   users_addresses[]
+  users_cards       users_cards[]
+  users_entreprises users_entreprises[]
+  users_info        users_info[]
+}
+
+model users_addresses {
+  id          Int     @id @default(autoincrement())
+  id_user     BigInt  @db.UnsignedBigInt
+  cep         String  @db.VarChar(50)
+  street      String  @db.VarChar(100)
+  district    String  @db.VarChar(50)
+  city        String  @db.VarChar(50)
+  description String  @db.VarChar(100)
+  county      String? @default("BR") @db.VarChar(3)
+  number      Int
+  complement  String  @db.VarChar(100)
+  reference   String  @db.VarChar(100)
+  state       String  @db.VarChar(25)
+  users       users   @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_addresses_ibfk_1")
+
+  @@index([id_user], map: "id_user")
+}
+
+model users_cards {
+  id         Int    @id @default(autoincrement())
+  name       String @db.VarChar(255)
+  number     Int
+  expiration String @db.Char(7)
+  cvv        Int
+  id_user    BigInt @db.UnsignedBigInt
+  users      users  @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_cards_ibfk_1")
+
+  @@index([id_user], map: "id_user")
+}
+
+model users_entreprises {
+  id                 Int     @id @default(autoincrement())
+  cnpj               String  @db.VarChar(20)
+  nominee            String  @db.VarChar(100)
+  phone              String? @db.VarChar(20)
+  ramal              String? @db.VarChar(10)
+  email              String? @db.VarChar(100)
+  id_user            BigInt  @db.UnsignedBigInt @unique
+  corporate_name     String  @db.VarChar(50)
+  fantasy_name       String  @db.VarChar(50)
+  email_verification Int?    @default(0)
+  email_token        String? @db.VarChar(250)
+  users              users   @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_entreprises_ibfk_1")
+  requests           so_requests[]
+
+  @@index([id_user], map: "id_user")
+}
+
+model users_info {
+  id      Int      @id @default(autoincrement())
+  id_user BigInt   @db.UnsignedBigInt
+  cpf     Int
+  birth   DateTime @db.Date
+  phone   Int
+  fname   String   @db.VarChar(100)
+  lname   String   @db.VarChar(100)
+  users   users    @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_info_ibfk_1")
+
+  @@index([id_user], map: "id_user")
+}
