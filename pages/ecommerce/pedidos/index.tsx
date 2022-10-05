@@ -118,6 +118,10 @@ export const getStaticProps: GetStaticProps = async () => {
       status: true,
       total: true,
     },
+
+    orderBy: {
+      created_at: "desc",
+    },
   });
 
   const rowsGroup = requests.map<OrdersDataGridRowsProps>((request) => ({
