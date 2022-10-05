@@ -188,12 +188,9 @@ const AsideBar = () => {
   return (
     <RusselAsideBar sx={{ backgroundColor: getAsideBarColor() }}>
       <Link href={"/"}>
-        <Image
-          src={LogoWhite}
-          width={141}
-          height={56}
-          style={{ cursor: "pointer" }}
-        />
+        <div style={{ minHeight: "56px" }}>
+          <Image src={LogoWhite} width={141} style={{ cursor: "pointer" }} />
+        </div>
       </Link>
 
       <RusselAsideBarSubmenu>{getAsideBarMenu()}</RusselAsideBarSubmenu>
