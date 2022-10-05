@@ -70,7 +70,7 @@ const columns: GridColDef[] = [
             <Typography variant="paragraph" className="clamp">
               {date?.getDate()}/{date?.getMonth() + 1}/{date?.getFullYear()}
               <br />
-              às {date?.getHours()}:{date?.getMinutes()}h
+              às {date?.getHours() + 3}:{date?.getMinutes()}h
             </Typography>
           </div>
         )
