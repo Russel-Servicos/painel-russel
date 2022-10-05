@@ -4,6 +4,7 @@ import {
   DataGridProps,
   GridColDef,
   GridRenderCellParams,
+  GridSelectionModel,
 } from "@mui/x-data-grid";
 import Link from "next/link";
 import getPaymentMethod from "../services/getPaymentMethod";
@@ -82,6 +83,13 @@ const columns: GridColDef[] = [
     flex: 0.8,
     align: "center",
     headerAlign: "center",
+    renderCell: ({ value }) => {
+      return (
+        <Typography variant="paragraph" className="clamp">
+          {value}
+        </Typography>
+      );
+    },
   },
   {
     field: "payment",
@@ -134,6 +142,8 @@ const columns: GridColDef[] = [
 
 interface OrdersDataGridProps {
   rows: Array<OrdersDataGridRowsProps>;
+  selectionModel: GridSelectionModel;
+  onSelectionModelChange: (selectionModel: GridSelectionModel) => void;
 }
 
 export interface OrdersDataGridRowsProps {
@@ -145,7 +155,11 @@ export interface OrdersDataGridRowsProps {
   total: number;
 }
 
-const OrdersDataGrid = ({ rows }: OrdersDataGridProps) => {
+const OrdersDataGrid = ({
+  rows,
+  selectionModel,
+  onSelectionModelChange,
+}: OrdersDataGridProps) => {
   return (
     <Box display={"flex"} width={"100%"}>
       <div style={{ flexGrow: 1 }}>
@@ -157,6 +171,8 @@ const OrdersDataGrid = ({ rows }: OrdersDataGridProps) => {
           pageSize={10}
           rowHeight={96}
           rowsPerPageOptions={[10, 20, 30]}
+          selectionModel={selectionModel}
+          onSelectionModelChange={onSelectionModelChange}
         />
       </div>
     </Box>
