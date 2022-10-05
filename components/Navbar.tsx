@@ -120,7 +120,7 @@ const Navbar = ({ username }: Props) => {
     ));
   };
   return (
-    <RusselNavbar position="static">
+    <RusselNavbar position="sticky">
       <Grid container columns={12}>
         <Grid xs={8}>
           <RusselNavbarTitleBox>
