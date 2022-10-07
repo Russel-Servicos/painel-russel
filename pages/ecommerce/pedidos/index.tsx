@@ -13,6 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import theme from "../../../styles/theme";
 import { GridSelectionModel } from "@mui/x-data-grid";
 import { PrismaClient } from "@prisma/client";
+import axios from "axios";
 
 const Pedidos: NextPage = ({
   rows,
@@ -23,8 +24,28 @@ const Pedidos: NextPage = ({
     payment: "",
   });
 
+  const [rowsState, setRowsState] = useState([...rows]);
   const [search, setSearch] = useState("");
   const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const isDelteButtonDisabled = () => {
+    return selectionModel.length < 1;
+  };
+
+  const onDeleteButtonClick = async () => {
+    try {
+      setLoading(true);
+      await axios.post("/api/ecommerce/pedidos?action=delete", {
+        resources: selectionModel as [string],
+      });
+      setRowsState(rowsState.filter((row) => !selectionModel.includes(row.id)));
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <MainContainer>
@@ -90,13 +111,17 @@ const Pedidos: NextPage = ({
         </Box>
 
         <Box display={"flex"} justifyContent={"flex-end"}>
-          <Button disabled endIcon={<DeleteIcon />}>
+          <Button
+            onClick={onDeleteButtonClick}
+            disabled={isDelteButtonDisabled() || loading}
+            endIcon={<DeleteIcon />}
+          >
             Excluir
           </Button>
         </Box>
 
         <OrdersDataGrid
-          rows={rows}
+          rows={rowsState}
           selectionModel={selectionModel}
           onSelectionModelChange={(newSelectionModel) =>
             setSelectionModel(newSelectionModel)
