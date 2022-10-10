@@ -5,7 +5,7 @@ import {
   FormControl,
   SelectChangeEvent,
 } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { KeyboardArrowDownIcon } from "../icons";
 import theme from "../styles/theme";
 
 interface Props {

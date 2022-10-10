@@ -1,5 +1,5 @@
 import { Input, InputAdornment } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { SearchIcon } from "../icons";
 import theme from "../styles/theme";
 import { ChangeEvent } from "react";
 
