@@ -15,7 +15,7 @@ const RusselDataGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
   width: "100%",
   background: theme.palette.neutral?.[2],
   border: `1px solid ${theme.palette.neutral?.[4]}`,
-  "& .Mui-checked": {
+  ".Mui-checked": {
     color: theme.palette.neutral?.[9],
   },
   "& .MuiDataGrid-cell": {
