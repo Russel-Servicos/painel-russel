@@ -13,11 +13,13 @@ import { styled } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import React from "react";
 import { Box, BoxProps } from "@mui/system";
-import AppsIcon from "@mui/icons-material/Apps";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import SettingsIcon from "@mui/icons-material/Settings";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import {
+  AppsIcon,
+  NotificationsNoneIcon,
+  SettingsIcon,
+  NotificationsIcon,
+  AdminPanelSettingsIcon,
+} from "../icons";
 import theme from "../styles/theme";
 
 const RusselNavbar = styled(AppBar)<AppBarProps>(({ theme }) => ({

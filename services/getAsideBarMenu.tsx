@@ -5,15 +5,17 @@ import {
   AsideBarAccordion,
   AsideBarAccordionLink,
 } from "../components/AsideBar";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LockIcon from "@mui/icons-material/Lock";
-import PeopleIcon from "@mui/icons-material/People";
-import SettingsIcon from "@mui/icons-material/Settings";
-import ReceiptIcon from "@mui/icons-material/Receipt";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import HelpIcon from "@mui/icons-material/Help";
-import StarRateIcon from "@mui/icons-material/StarRate";
+import {
+  AccountCircleIcon,
+  LockIcon,
+  PeopleIcon,
+  SettingsIcon,
+  ReceiptIcon,
+  LocalOfferIcon,
+  FormatListBulletedIcon,
+  HelpIcon,
+  StarRateIcon,
+} from "../icons";
 
 export default () => {
   let { pathname } = useRouter();

@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import { ReactNode } from "react";
 import LogoWhite from "../public/img/logo-white.png";
 import { Link as MLink, LinkProps } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { ExpandMoreIcon } from "../icons";
 import theme from "../styles/theme";
 import getAsideBarMenu from "../services/getAsideBarMenu";
 
