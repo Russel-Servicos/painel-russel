@@ -1,7 +1,7 @@
 const getPaymentMethod = (payment_number: number): string => {
   switch (payment_number) {
     case 1:
-      return "Boleto";
+      return "Boleto bancário";
     case 2:
       return "Cartão de crédito";
     case 5:
