@@ -14,6 +14,11 @@ import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import HelpIcon from "@mui/icons-material/Help";
 import StarRateIcon from "@mui/icons-material/StarRate";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import PixRoundedIcon from "@mui/icons-material/PixRounded";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
 export {
   ExpandMoreIcon,
@@ -32,4 +37,9 @@ export {
   FormatListBulletedIcon,
   HelpIcon,
   StarRateIcon,
+  InsertDriveFileIcon,
+  CreditCardIcon,
+  PixRoundedIcon,
+  BarChartIcon,
+  AttachMoneyIcon,
 };
