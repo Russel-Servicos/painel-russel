@@ -288,6 +288,7 @@ model so_requests {
   recurring_transaction Int?       @default(0)
   so_itens              so_itens[]
   enterprise            users_entreprises @relation(fields: [user_id], references: [id_user])
+  address               users_addresses @relation(fields: [address_id], references: [id])
 }
 
 model so_taxes {
@@ -365,6 +366,7 @@ model users_addresses {
   reference   String  @db.VarChar(100)
   state       String  @db.VarChar(25)
   users       users   @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_addresses_ibfk_1")
+  requests    so_requests[]
 
   @@index([id_user], map: "id_user")
 }
