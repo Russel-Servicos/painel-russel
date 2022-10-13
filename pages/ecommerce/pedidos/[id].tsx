@@ -127,44 +127,46 @@ const Pedido: NextPage = ({
             <Button disabled>Ver contrato</Button>
           </Box>
         </Box>
-        <Box display={"flex"} gap={"24px"} flexDirection={"column"}>
-          <Typography variant="title3" fontWeight={"medium"}>
-            Endereço de implantação
-          </Typography>
+
+        <Typography variant="title3" fontWeight={"medium"}>
+          Endereço de implantação
+        </Typography>
+        <Box display={"flex"} minWidth={"355px"} gap={"120px"}>
           <Box display={"flex"} gap={"8px"} flexDirection={"column"}>
-            <Box display={"flex"} gap={"120px"}>
-              <Typography minWidth={"355px"}>
-                <Typography component={"span"} fontWeight={"medium"}>
-                  Endereço:
-                </Typography>{" "}
-                {order.address.street}
-              </Typography>
-              <Typography>
-                <Typography component={"span"} fontWeight={"medium"}>
-                  CEP:
-                </Typography>{" "}
-                {order.address.cep}
-              </Typography>
-            </Box>
-            <Box display={"flex"} gap={"120px"}>
-              <Typography minWidth={"355px"}>
-                <Typography component={"span"} fontWeight={"medium"}>
-                  Bairro:
-                </Typography>{" "}
-                {order.address.district}
-              </Typography>
-              <Typography>
-                <Typography component={"span"} fontWeight={"medium"}>
-                  Observações:
-                </Typography>{" "}
-                {order.address.obs || "N/A"}
-              </Typography>
-            </Box>
+            <Typography minWidth={"355px"}>
+              <Typography component={"span"} fontWeight={"medium"}>
+                Endereço:
+              </Typography>{" "}
+              {order.address.street}
+            </Typography>
+
+            <Typography minWidth={"355px"}>
+              <Typography component={"span"} fontWeight={"medium"}>
+                Bairro:
+              </Typography>{" "}
+              {order.address.district}
+            </Typography>
+
             <Typography>
               <Typography component={"span"} fontWeight={"medium"}>
                 Cidade:
               </Typography>{" "}
               {order.address.city}
+            </Typography>
+          </Box>
+
+          <Box display={"flex"} gap={"8px"} flexDirection={"column"}>
+            <Typography>
+              <Typography component={"span"} fontWeight={"medium"}>
+                CEP:
+              </Typography>{" "}
+              {order.address.cep}
+            </Typography>
+            <Typography sx={{ wordWrap: "break-word", wordBreak: "break-all" }}>
+              <Typography component={"span"} fontWeight={"medium"}>
+                Observações:
+              </Typography>{" "}
+              {order.address.obs || "N/A"}
             </Typography>
           </Box>
         </Box>
