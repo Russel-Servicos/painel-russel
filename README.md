@@ -3,9 +3,14 @@
 ## Rodando o projeto
 
 - Crie um arquivo .env seguindo o exemplo do arquivo ".env.example"
-  `npm install`
-  `npx prisma generate`
-  `npm run dev`
+
+  ```
+    npm install
+    npx prisma generate
+    npm run dev
+
+  ```
+
 - Navegue até `http://localhost:3000`
 
 ## Para gerar o build
