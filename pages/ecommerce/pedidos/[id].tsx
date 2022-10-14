@@ -9,6 +9,7 @@ import {
 } from "next";
 import Button, { LightButton } from "../../../components/Button";
 import MainContainer from "../../../components/MainContainer";
+import OrderDetailsTable from "../../../components/OrderDatailsTable";
 import StatusChip from "../../../components/StatusChip";
 import getPaymentMethod from "../../../services/getPaymentMethod";
 import getPaymentMethodIcon from "../../../services/getPaymentMethodIcon";
@@ -127,54 +128,58 @@ const Pedido: NextPage = ({
             <Button disabled>Ver contrato</Button>
           </Box>
         </Box>
+        <section>
+          <Typography variant="title3" fontWeight={"medium"}>
+            Endereço de implantação
+          </Typography>
+          <Box display={"flex"} minWidth={"355px"} gap={"120px"}>
+            <Box display={"flex"} gap={"8px"} flexDirection={"column"}>
+              <Typography minWidth={"355px"}>
+                <Typography component={"span"} fontWeight={"medium"}>
+                  Endereço:
+                </Typography>{" "}
+                {order.address.street}
+              </Typography>
 
-        <Typography variant="title3" fontWeight={"medium"}>
-          Endereço de implantação
-        </Typography>
-        <Box display={"flex"} minWidth={"355px"} gap={"120px"}>
-          <Box display={"flex"} gap={"8px"} flexDirection={"column"}>
-            <Typography minWidth={"355px"}>
-              <Typography component={"span"} fontWeight={"medium"}>
-                Endereço:
-              </Typography>{" "}
-              {order.address.street}
-            </Typography>
+              <Typography minWidth={"355px"}>
+                <Typography component={"span"} fontWeight={"medium"}>
+                  Bairro:
+                </Typography>{" "}
+                {order.address.district}
+              </Typography>
 
-            <Typography minWidth={"355px"}>
-              <Typography component={"span"} fontWeight={"medium"}>
-                Bairro:
-              </Typography>{" "}
-              {order.address.district}
-            </Typography>
+              <Typography>
+                <Typography component={"span"} fontWeight={"medium"}>
+                  Cidade:
+                </Typography>{" "}
+                {order.address.city}
+              </Typography>
+            </Box>
 
-            <Typography>
-              <Typography component={"span"} fontWeight={"medium"}>
-                Cidade:
-              </Typography>{" "}
-              {order.address.city}
-            </Typography>
+            <Box display={"flex"} gap={"8px"} flexDirection={"column"}>
+              <Typography>
+                <Typography component={"span"} fontWeight={"medium"}>
+                  CEP:
+                </Typography>{" "}
+                {order.address.cep}
+              </Typography>
+              <Typography
+                sx={{ wordWrap: "break-word", wordBreak: "break-all" }}
+              >
+                <Typography component={"span"} fontWeight={"medium"}>
+                  Observações:
+                </Typography>{" "}
+                {order.address.obs || "N/A"}
+              </Typography>
+            </Box>
           </Box>
-
-          <Box display={"flex"} gap={"8px"} flexDirection={"column"}>
-            <Typography>
-              <Typography component={"span"} fontWeight={"medium"}>
-                CEP:
-              </Typography>{" "}
-              {order.address.cep}
-            </Typography>
-            <Typography sx={{ wordWrap: "break-word", wordBreak: "break-all" }}>
-              <Typography component={"span"} fontWeight={"medium"}>
-                Observações:
-              </Typography>{" "}
-              {order.address.obs || "N/A"}
-            </Typography>
-          </Box>
-        </Box>
-        <Box>
+        </section>
+        <section>
           <Typography variant={"title3"} fontWeight={"medium"}>
             Itens do pedido
           </Typography>
-        </Box>
+          <OrderDetailsTable items={order.items} />
+        </section>
       </Box>
     </MainContainer>
   );
@@ -221,6 +226,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         corporateName: order?.enterprise.corporate_name,
         total: order?.total,
         paymentForm: order?.payment_form,
+        items: order?.items,
         user: {
           name: order?.enterprise.users.name,
           email: order?.enterprise.users.email,
