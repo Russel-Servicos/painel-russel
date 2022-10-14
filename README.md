@@ -8,7 +8,6 @@
     npm install
     npx prisma generate
     npm run dev
-
   ```
 
 - Navegue até `http://localhost:3000`
