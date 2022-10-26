@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import { GetServerSideProps, GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsType, NextPage } from "next";
 import React from "react";
 import { useState } from "react";
 import Button from "../../../components/Button";
@@ -15,9 +15,7 @@ import { GridSelectionModel } from "@mui/x-data-grid";
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 
-const Pedidos: NextPage = ({
-  rows,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Pedidos: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ rows }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [filters, setFilters] = useState({
     date: "",
     status: "",
@@ -132,39 +130,47 @@ const Pedidos: NextPage = ({
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const prisma = new PrismaClient();
-  const requests = await prisma.so_requests.findMany({
-    select: {
-      code: true,
-      enterprise: true,
-      created_at: true,
-      payment_form: true,
-      status: true,
-      total: true,
-    },
+  try {
+    const requests = await prisma.so_requests.findMany({
+      select: {
+        code: true,
+        enterprise: true,
+        created_at: true,
+        payment_form: true,
+        status: true,
+        total: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
 
-    orderBy: {
-      created_at: "desc",
-    },
-  });
+    const rowsGroup = requests.map<OrdersDataGridRowsProps>((request) => ({
+      id: request.code,
+      date: request.created_at?.toISOString() || "",
+      client: request.enterprise.corporate_name,
+      payment: request.payment_form,
+      total: request.total,
+      status: request.status || "",
+    }));
 
-  const rowsGroup = requests.map<OrdersDataGridRowsProps>((request) => ({
-    id: request.code,
-    date: request.created_at?.toISOString() || "",
-    client: request.enterprise.corporate_name,
-    payment: request.payment_form,
-    total: request.total,
-    status: request.status || "",
-  }));
-
-  await prisma.$disconnect();
-  const rows: Array<OrdersDataGridRowsProps> | [] = rowsGroup;
-  return {
-    props: {
-      rows,
-    },
-  };
+    await prisma.$disconnect();
+    const rows: Array<OrdersDataGridRowsProps> | [] = rowsGroup;
+    return {
+      props: {
+        rows,
+      },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {
+        rows: [],
+      },
+    };
+  }
 };
 
 export default Pedidos;
