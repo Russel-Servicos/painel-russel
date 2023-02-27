@@ -5,17 +5,29 @@ import {
   FormControl,
   SelectChangeEvent,
 } from "@mui/material";
+import { useRef } from "react";
 import { KeyboardArrowDownIcon } from "../icons";
 import theme from "../styles/theme";
 
 interface Props {
   options: [{ name: string; value: string | number }];
   label: string;
-  onChange: (e: SelectChangeEvent<string>) => void;
-  value: string;
+  onFiltersChange: (filters: {
+    date?: string;
+    status?: string;
+    payment?: string;
+  }) => void;
+  value?: string;
 }
 
-const FilterSelect = ({ options, label, onChange, value }: Props) => {
+const FilterSelect = ({ options, label, onFiltersChange }: Props) => {
+  const filters_ref = useRef({})
+
+  const handleFilterChange = (e: SelectChangeEvent<string>) => {
+    const {name, value} = e.target
+    filters_ref.current = { ...filters_ref.current, [name]: value };
+    onFiltersChange(filters_ref.current);
+  }
   return (
     <FormControl
       sx={{
@@ -51,8 +63,8 @@ const FilterSelect = ({ options, label, onChange, value }: Props) => {
             marginRight: theme.spacing(2),
           },
         }}
-        onChange={onChange}
-        value={value}
+        onChange={handleFilterChange}
+        //value={value}
       >
         <MenuItem value={""}>
           <Typography variant="paragraph">Nenhum</Typography>

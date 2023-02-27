@@ -2,29 +2,67 @@ import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { PrismaClient } from "@prisma/client";
 import {
-  GetStaticPaths,
-  GetStaticProps,
-  InferGetStaticPropsType,
-  NextPage,
+  GetServerSideProps,
 } from "next";
+import Link from "next/link";
 import Button, { LightButton } from "../../../components/Button";
 import MainContainer from "../../../components/MainContainer";
 import OrderDetailsTable from "../../../components/OrderDatailsTable";
-import StatusChip from "../../../components/StatusChip";
+import StatusChip, { DBStatusName } from "../../../components/StatusChip";
 import getPaymentMethod from "../../../services/getPaymentMethod";
 import getPaymentMethodIcon from "../../../services/getPaymentMethodIcon";
 import theme from "../../../styles/theme";
 
-const Pedido: NextPage = ({
+type Order = {
+  code: string;
+  id: number;
+  status: string;
+  createdAt: string;
+  corporateName: string;
+  total: string;
+  paymentForm: number;
+  items: {
+    qtd: number;
+    name: string;
+    price: number;
+    description: string;
+  }[];
+  user: {
+    name: string;
+    email: string;
+    phone: string;
+    ramal: string;
+  };
+  address: {
+    street: string;
+    district: string;
+    city: string;
+    cep: string;
+    obs: string;
+  };
+};
+
+const PedidoPage = ({
   order,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const creationDate = new Date(order.createdAt);
+}: {order: Order | null}) => {
+
+  if (!order) {
+    return (
+      <>
+       <p>Não foi possivel carregar pedido</p>
+      </>
+    )
+  }
+  const creationDate = new Date(order?.createdAt);
+
   return (
     <MainContainer>
       <Box display={"flex"} flexDirection={"column"} gap={"40px"}>
-        <section>
-          <LightButton small>voltar</LightButton>
-        </section>
+        <div>
+          <Link href={"/ecommerce/pedidos"}>
+            <LightButton small>voltar</LightButton>
+          </Link>
+        </div>
         <Box
           component={"section"}
           display={"flex"}
@@ -50,7 +88,7 @@ const Pedido: NextPage = ({
                 Status:
               </Typography>
 
-              <StatusChip status={order.status} />
+              <StatusChip status={order.status as DBStatusName} />
             </Box>
             <Box display={"flex"} flexDirection={"column"} gap={"8px"}>
               <Typography>
@@ -101,7 +139,7 @@ const Pedido: NextPage = ({
               R${order.total}
             </Typography>
             <Box display={"flex"} gap={"12px"}>
-              {getPaymentMethodIcon(order.paymentForm)}
+              {getPaymentMethodIcon(order.paymentForm as 1 | 2 | 5 | 6 )}
               <Typography>{getPaymentMethod(order.paymentForm)}</Typography>
             </Box>
             <Typography
@@ -180,12 +218,20 @@ const Pedido: NextPage = ({
           </Typography>
           <OrderDetailsTable items={order.items} />
         </section>
+        {/*
+          <iframe
+            style={{ width: "100%", height: "500px" }}
+            src={
+              order.client_sign_url
+            }
+          />
+          */}
       </Box>
     </MainContainer>
   );
 };
 
-export const getStaticPaths: GetStaticPaths = async () => {
+/*export const getStaticPaths: GetStaticPaths = async () => {
   const prisma = new PrismaClient();
   const orders = await prisma.so_requests.findMany();
   const paths = orders.map((order) => {
@@ -198,51 +244,60 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths,
     fallback: false,
   };
-};
+};*/
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const prisma = new PrismaClient();
-  const order = await prisma.so_requests.findFirst({
-    where: {
-      code: context.params?.id as string,
-    },
+  try {
+    const order = await prisma.so_requests.findFirst({
+      where: {
+        code: context.params?.id as string,
+      },
 
-    include: {
-      enterprise: {
-        include: {
-          users: true,
+      include: {
+        enterprise: {
+          include: {
+            users: true,
+          },
+        },
+        address: true,
+      },
+    });
+    return {
+      props: {
+        order: {
+          code: order?.code,
+          id: order?.id,
+          status: order?.status,
+          createdAt: order?.created_at?.toISOString(),
+          corporateName: order?.enterprise.corporate_name,
+          total: order?.total,
+          paymentForm: order?.payment_form,
+          items: order?.items,
+          user: {
+            name: order?.enterprise.users.name,
+            email: order?.enterprise.users.email,
+            phone: order?.enterprise.phone,
+            ramal: order?.enterprise.ramal,
+          },
+          address: {
+            street: order?.address.street,
+            district: order?.address.district,
+            city: order?.address.city,
+            cep: order?.address.cep,
+            obs: order?.address.description,
+          },
         },
       },
-      address: true,
-    },
-  });
-  return {
-    props: {
-      order: {
-        code: order?.code,
-        id: order?.id,
-        status: order?.status,
-        createdAt: order?.created_at?.toISOString(),
-        corporateName: order?.enterprise.corporate_name,
-        total: order?.total,
-        paymentForm: order?.payment_form,
-        items: order?.items,
-        user: {
-          name: order?.enterprise.users.name,
-          email: order?.enterprise.users.email,
-          phone: order?.enterprise.phone,
-          ramal: order?.enterprise.ramal,
-        },
-        address: {
-          street: order?.address.street,
-          district: order?.address.district,
-          city: order?.address.city,
-          cep: order?.address.cep,
-          obs: order?.address.description,
-        },
+    };
+  } catch (err) {
+    return {
+      props: {
+        order: {},
       },
-    },
-  };
+    };
+  }
+  
 };
 
-export default Pedido;
+export default PedidoPage;
