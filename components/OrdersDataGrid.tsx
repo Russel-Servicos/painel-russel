@@ -148,8 +148,8 @@ const columns: GridColDef[] = [
     disableColumnMenu: true,
     align: "center",
     flex: 1,
-    renderCell: ({ id }) => (
-      <Link href={`pedidos/${id}`}>
+    renderCell: ({row}: any) => (
+      <Link href={`pedidos/${row?.code}`} >
         <LightButton>DETALHES</LightButton>
       </Link>
     ),

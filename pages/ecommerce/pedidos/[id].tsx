@@ -293,7 +293,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   } catch (err) {
     return {
       props: {
-        order: {},
+        order: null,
       },
     };
   }
