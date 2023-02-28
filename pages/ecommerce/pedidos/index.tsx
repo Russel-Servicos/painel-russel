@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, SelectChangeEvent, Typography } from "@mui/material";
 import { GetServerSideProps, GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsType, NextPage } from "next";
 import React from "react";
 import { useState } from "react";
@@ -16,11 +16,6 @@ import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 
 const Pedidos: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ rows }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [filters, setFilters] = useState({
-    date: "",
-    status: "",
-    payment: "",
-  });
 
   const [rowsState, setRowsState] = useState([...rows]);
   const [search, setSearch] = useState("");
@@ -44,6 +39,13 @@ const Pedidos: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
       setLoading(false);
     }
   };
+   const onFiltersChange = (filters: {
+     date?: string;
+     status?: string;
+     payment?: string;
+   }) => {
+     //buscar no banco items que correspondem aos filtros passados
+   };
 
   return (
     <MainContainer>
@@ -86,24 +88,17 @@ const Pedidos: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
             <FilterSelect
               options={[{ name: "teste", value: "teste" }]}
               label="Data"
-              onChange={(e) => setFilters({ ...filters, date: e.target.value })}
-              value={filters.date}
+              onFiltersChange={onFiltersChange}
             />
             <FilterSelect
               options={[{ name: "teste", value: "teste" }]}
               label="Status"
-              onChange={(e) =>
-                setFilters({ ...filters, status: e.target.value })
-              }
-              value={filters.status}
+              onFiltersChange={onFiltersChange}
             />
             <FilterSelect
               options={[{ name: "teste", value: "teste" }]}
               label="Forma de pagamento"
-              onChange={(e) =>
-                setFilters({ ...filters, payment: e.target.value })
-              }
-              value={filters.payment}
+              onFiltersChange={onFiltersChange}
             />
           </Box>
         </Box>
@@ -136,6 +131,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     const requests = await prisma.so_requests.findMany({
       select: {
         code: true,
+        id: true,
         enterprise: true,
         created_at: true,
         payment_form: true,

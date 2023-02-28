@@ -21,6 +21,7 @@ import {
   AdminPanelSettingsIcon,
 } from "../icons";
 import theme from "../styles/theme";
+import { signOut, useSession } from "next-auth/react";
 
 const RusselNavbar = styled(AppBar)<AppBarProps>(({ theme }) => ({
   backgroundColor: theme.palette.neutral?.main,
@@ -48,13 +49,9 @@ const RusselNavbarIconNavItem = styled(ListItem)<ListItemProps>(
   })
 );
 
-interface Props {
-  username: string;
-}
-
-const Navbar = ({ username }: Props) => {
+const Navbar = () => {
   const { pathname } = useRouter();
-
+   const { data: session, status } = useSession();
   const getNavbarTitle = () => {
     const path = pathname.split("/")[1];
     switch (path) {
@@ -109,7 +106,19 @@ const Navbar = ({ username }: Props) => {
           <AdminPanelSettingsIcon sx={{ fontSize: 16 }} />
         </Avatar>
         <Typography variant="paragraph" sx={{ fontWeight: "medium" }}>
-          {username.toUpperCase()}
+          {(session?.user?.name as string)?.toUpperCase()}
+        </Typography>
+      </Box>,
+      <Box
+        key={3}
+        display={"flex"}
+        component={"div"}
+        alignItems={"center"}
+        sx={{ gap: "8px", color: theme.palette?.status?.link }}
+        onClick={() => signOut({callbackUrl: '/login'})}
+      >
+        <Typography variant="paragraph" sx={{ fontWeight: "medium" }}>
+          SAIR
         </Typography>
       </Box>,
     ];
