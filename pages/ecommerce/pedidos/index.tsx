@@ -144,7 +144,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
     });
 
     const rowsGroup = requests.map<OrdersDataGridRowsProps>((request) => ({
-      id: request.code,
+      id: request.id,
+      code: request.code,
       date: request.created_at?.toISOString() || "",
       client: request.enterprise.corporate_name,
       payment: request.payment_form,

@@ -51,6 +51,18 @@ const RusselDataGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
 const columns: GridColDef[] = [
   {
     field: "id",
+    headerName: "ID",
+    flex: 0.6,
+    headerAlign: "center",
+    align: "center",
+    renderCell: ({ value }) => (
+      <Typography variant="paragraph" className="clamp">
+        {value}
+      </Typography>
+    ),
+  },
+  {
+    field: "code",
     headerName: "CÓDIGO",
     flex: 0.6,
     headerAlign: "center",
@@ -138,9 +150,7 @@ const columns: GridColDef[] = [
     flex: 1,
     renderCell: ({ id }) => (
       <Link href={`pedidos/${id}`}>
-        <a>
-          <LightButton>VER DETALHES</LightButton>
-        </a>
+        <LightButton>DETALHES</LightButton>
       </Link>
     ),
   },
@@ -153,7 +163,8 @@ interface OrdersDataGridProps {
 }
 
 export interface OrdersDataGridRowsProps {
-  id: string;
+  id: number;
+  code: string;
   date: string;
   client: string;
   payment: number;
