@@ -11,7 +11,7 @@ const Layout: React.FC<Props> = ({ children }) => (
   <Box display="flex" height={"100%"}>
     <AsideBar />
     <Box width={"100%"} sx={{ marginLeft: "240px" }}>
-      <Navbar username="pepe" />
+      <Navbar />
       {children}
     </Box>
   </Box>
