@@ -113,13 +113,13 @@ const Pedidos: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           </Button>
         </Box>
 
-        <OrdersDataGrid
+        {rows && <OrdersDataGrid
           rows={rowsState}
           selectionModel={selectionModel}
           onSelectionModelChange={(newSelectionModel) =>
             setSelectionModel(newSelectionModel)
           }
-        />
+        />}
       </Box>
     </MainContainer>
   );
@@ -164,7 +164,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     console.log(err);
     return {
       props: {
-        rows: [],
+        rows: null,
       },
     };
   }
