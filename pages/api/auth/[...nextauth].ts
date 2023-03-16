@@ -53,9 +53,9 @@ export const authOptions = {
     async signIn({ user, account, profile, email, credentials }: any) {
       //console.log("signUSER: ", user);
       const isAllowedToSignIn =
-        user.email_sent === "designer@empresa.russelservicos.com.br" ||
-        user.email_sent === "pamella.cristina@russelservicos.com.br" ||
-        user.email_sent === "admin@russelservicos.com.br";
+        user.email_sent === "designer@empresa.russelservico.com.br" ||
+        user.email_sent === "pamella.cristina@russelservico.com.br" ||
+        user.email_sent === "admin@russelservico.com.br";
 
       if (isAllowedToSignIn) {
         account.token = user.token;
