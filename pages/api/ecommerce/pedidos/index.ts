@@ -13,7 +13,7 @@ export default async function handler(
         const { resources } = req.body;
         await prisma.so_requests.deleteMany({
           where: {
-            code: {
+            id: {
               in: resources,
             },
           },

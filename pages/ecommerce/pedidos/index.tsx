@@ -142,7 +142,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
         created_at: "desc",
       },
     });
-    console.log(requests)
     const rowsGroup = requests.map<OrdersDataGridRowsProps>((request) => ({
       id: request.id,
       code: request.code,
@@ -152,7 +151,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
       total: request.total,
       status: request.status || "",
     }));
-    console.log(rowsGroup)
 
     await prisma.$disconnect();
     const rows: Array<OrdersDataGridRowsProps> | [] = rowsGroup;
