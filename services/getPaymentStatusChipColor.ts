@@ -4,12 +4,13 @@ export type Status =
   | "pendente de pagamento"
   | "pendente de implantação"
   | "implantação realizada"
-  | "pedido cancelado";
+  | "pedido cancelado"
+  | "pagamento efetuado"
 
 const getPaymentStatusBadgeColor = (
   paymentStatus: Status
 ): { bg: string; color: string | undefined } | undefined => {
-  switch (paymentStatus.toLocaleLowerCase()) {
+  switch (paymentStatus?.toLocaleLowerCase()) {
     case "pendente de pagamento":
       return {
         bg: "rgba(229, 229, 229, 0.35)",

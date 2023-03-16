@@ -9,7 +9,7 @@ const StatusChip = ({ status }: { status: DBStatusName }) => {
     <Chip
       label={
         <Typography variant="label">
-          {getPaymentStatus(status).toUpperCase()}
+          {getPaymentStatus(status)?.toUpperCase()}
         </Typography>
       }
       sx={{

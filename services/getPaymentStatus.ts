@@ -6,6 +6,7 @@ const getPaymentStatus = (status: DBStatusName): Status => {
     case "pending":
       return "pendente de pagamento";
     case "paid":
+      return "pagamento efetuado";
     case "signed":
       return "pendente de implantação";
     case "canceled":
