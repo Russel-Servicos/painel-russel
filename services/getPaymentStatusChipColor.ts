@@ -16,6 +16,11 @@ const getPaymentStatusBadgeColor = (
         bg: "rgba(229, 229, 229, 0.35)",
         color: theme.palette.neutral?.[8],
       };
+    case "pagamento efetuado":
+      return {
+        bg: "#A7F1A8",
+        color: theme.palette.neutral?.[8],
+      };
     case "pendente de implantação":
       return {
         bg: "rgba(72, 97, 159, 0.35)",
