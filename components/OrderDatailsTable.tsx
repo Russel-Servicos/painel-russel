@@ -38,8 +38,8 @@ const OrderDetailsTable = ({ items }: Props) => {
         <TableHead>
           <TableRow>
             <TableCell align="center">Quantidade</TableCell>
-            <TableCell>Profissional</TableCell>
-            <TableCell align="center">Duração</TableCell>
+            <TableCell>Profissional/PRODUTO</TableCell>
+            <TableCell align="center">Duração/INICIO</TableCell>
             <TableCell align="center">Valor</TableCell>
           </TableRow>
         </TableHead>
