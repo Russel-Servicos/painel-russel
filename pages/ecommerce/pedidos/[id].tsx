@@ -1,9 +1,7 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { PrismaClient } from "@prisma/client";
-import {
-  GetServerSideProps,
-} from "next";
+import { GetServerSideProps } from "next";
 import Link from "next/link";
 import Button, { LightButton } from "../../../components/Button";
 import MainContainer from "../../../components/MainContainer";
@@ -42,16 +40,13 @@ type Order = {
   };
 };
 
-const PedidoPage = ({
-  order,
-}: {order: Order | null}) => {
-
+const PedidoPage = ({ order }: { order: Order | null }) => {
   if (!order) {
     return (
       <>
-       <p>Não foi possivel carregar pedido</p>
+        <p>Não foi possivel carregar pedido</p>
       </>
-    )
+    );
   }
   const creationDate = new Date(order?.createdAt);
 
@@ -139,7 +134,7 @@ const PedidoPage = ({
               R${order.total}
             </Typography>
             <Box display={"flex"} gap={"12px"}>
-              {getPaymentMethodIcon(order.paymentForm as 1 | 2 | 5 | 6 )}
+              {getPaymentMethodIcon(order.paymentForm as 1 | 2 | 5 | 6)}
               <Typography>{getPaymentMethod(order.paymentForm)}</Typography>
             </Box>
             <Typography
@@ -218,33 +213,10 @@ const PedidoPage = ({
           </Typography>
           <OrderDetailsTable items={order.items} />
         </section>
-        {/*
-          <iframe
-            style={{ width: "100%", height: "500px" }}
-            src={
-              order.client_sign_url
-            }
-          />
-          */}
       </Box>
     </MainContainer>
   );
 };
-
-/*export const getStaticPaths: GetStaticPaths = async () => {
-  const prisma = new PrismaClient();
-  const orders = await prisma.so_requests.findMany();
-  const paths = orders.map((order) => {
-    return { params: { id: order.code } };
-  });
-
-  await prisma.$disconnect();
-
-  return {
-    paths,
-    fallback: false,
-  };
-};*/
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const prisma = new PrismaClient();
@@ -254,14 +226,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         code: context.params?.id as string,
       },
 
-      include: {
+      /*include: {
         enterprise: {
           include: {
             users: true,
           },
         },
         address: true,
-      },
+      },*/
     });
     return {
       props: {
@@ -270,22 +242,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           id: order?.id,
           status: order?.status,
           createdAt: order?.created_at?.toISOString(),
-          corporateName: order?.enterprise.corporate_name,
+          type: order?.type,
+          corporateName: "QUALQUER",
           total: order?.total,
           paymentForm: order?.payment_form,
           items: order?.items,
           user: {
-            name: order?.enterprise.users.name,
-            email: order?.enterprise.users.email,
-            phone: order?.enterprise.phone,
-            ramal: order?.enterprise.ramal,
+            name: "QUALQUER", //order?.enterprise.users.name,
+            email: "QUALQUER", //order?.enterprise.users.email,
+            phone: "QUALQUER", //order?.enterprise.phone,
+            ramal: "QUALQUER", //order?.enterprise.ramal,
           },
           address: {
-            street: order?.address.street,
-            district: order?.address.district,
-            city: order?.address.city,
-            cep: order?.address.cep,
-            obs: order?.address.description,
+            street: "QUALQUER", //order?.address.street,
+            district: "QUALQUER", //order?.address.district,
+            city: "QUALQUER", //order?.address.city,
+            cep: "QUALQUER", //order?.address.cep,
+            obs: "QUALQUER", //order?.address.description,
           },
         },
       },
@@ -297,7 +270,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  
 };
 
 export default PedidoPage;

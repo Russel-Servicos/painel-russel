@@ -287,8 +287,8 @@ model so_requests {
   gateway_barcode       String?    @db.VarChar(250)
   recurring_transaction Int?       @default(0)
   so_itens              so_itens[]
-  enterprise            users_entreprises @relation(fields: [user_id], references: [id_user])
-  address               users_addresses @relation(fields: [address_id], references: [id])
+  users                 users?      @relation(fields: [user_id], references: [id]) 
+  
 }
 
 model so_taxes {
@@ -328,28 +328,36 @@ model uploads_folders {
 
 model users {
   id                BigInt              @id @default(autoincrement()) @db.UnsignedBigInt
-  role              String              @db.VarChar(15)
+  cpf               String?              @db.VarChar(11)
+  role              String?              @db.VarChar(15)
   pin               Int?
   type              Int?                @default(1)
   code              String?             @db.VarChar(20)
-  name              String              @db.VarChar(50)
-  email             String              @db.VarChar(70)
+  name              String?              @db.VarChar(50)
+  email             String?              @db.VarChar(70)
   lang              String?             @db.VarChar(5)
   image             String?             @db.VarChar(100)
-  status            String?             @db.VarChar(15)
+  status            Status             
   privacy           String?             @default("public") @db.VarChar(10)
   credit            Int?                @default(0)
-  password          String              @db.VarChar(62)
-  accept_terms      String              @default("off") @db.VarChar(3)
+  password          String?              @db.VarChar(62)
+  accept_terms      String?              @default("off") @db.VarChar(3)
   email_marketing   String?             @default("off") @db.VarChar(3)
-  theme             String              @default("black") @db.VarChar(10)
-  timezone          String              @default("America/Sao_Paulo") @db.VarChar(50)
+  theme             String?              @default("black") @db.VarChar(10)
+  timezone          String?              @default("America/Sao_Paulo") @db.VarChar(50)
   autobiography     String?             @db.VarChar(250)
-  created_in        DateTime            @default(now()) @db.DateTime(0)
+  created_in        DateTime?            @default(now()) @db.DateTime(0)
   users_addresses   users_addresses[]
   users_cards       users_cards[]
   users_entreprises users_entreprises[]
   users_info        users_info[]
+  requests    so_requests[]
+
+}
+
+enum Status {
+  active
+  inactive
 }
 
 model users_addresses {
@@ -366,7 +374,6 @@ model users_addresses {
   reference   String  @db.VarChar(100)
   state       String  @db.VarChar(25)
   users       users   @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_addresses_ibfk_1")
-  requests    so_requests[]
 
   @@index([id_user], map: "id_user")
 }
@@ -396,7 +403,6 @@ model users_entreprises {
   email_verification Int?    @default(0)
   email_token        String? @db.VarChar(250)
   users              users   @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_entreprises_ibfk_1")
-  requests           so_requests[]
 
   @@index([id_user], map: "id_user")
 }

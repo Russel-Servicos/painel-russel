@@ -132,25 +132,28 @@ export const getServerSideProps: GetServerSideProps = async () => {
       select: {
         code: true,
         id: true,
-        enterprise: true,
+        users: true,
         created_at: true,
         payment_form: true,
         status: true,
         total: true,
+        
       },
       orderBy: {
         created_at: "desc",
       },
     });
+   
     const rowsGroup = requests.map<OrdersDataGridRowsProps>((request) => ({
       id: request.id,
       code: request.code,
       date: request.created_at?.toISOString() || "",
-      client: request.enterprise.corporate_name,
+      client: request?.users?.name || 'USUARIO EXCLUIDO',
       payment: request.payment_form,
       total: request.total,
       status: request.status || "",
     }));
+
 
     await prisma.$disconnect();
     const rows: Array<OrdersDataGridRowsProps> | [] = rowsGroup;
