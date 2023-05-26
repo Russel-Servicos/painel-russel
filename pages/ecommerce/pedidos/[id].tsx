@@ -11,12 +11,18 @@ import getPaymentMethod from "../../../services/getPaymentMethod";
 import getPaymentMethodIcon from "../../../services/getPaymentMethodIcon";
 import theme from "../../../styles/theme";
 
+type Address = {
+  street: string;
+  district: string;
+  city: string;
+  cep: string;
+  description: string;
+};
 type Order = {
   code: string;
   id: number;
   status: string;
   createdAt: string;
-  corporateName: string;
   total: string;
   paymentForm: number;
   items: {
@@ -27,17 +33,13 @@ type Order = {
   }[];
   user: {
     name: string;
+    corporate_name?: string;
     email: string;
     phone: string;
-    ramal: string;
+    document: string;
   };
-  address: {
-    street: string;
-    district: string;
-    city: string;
-    cep: string;
-    obs: string;
-  };
+  payment_address: Address;
+  address: Address;
 };
 
 const PedidoPage = ({ order }: { order: Order | null }) => {
@@ -86,15 +88,17 @@ const PedidoPage = ({ order }: { order: Order | null }) => {
               <StatusChip status={order.status as DBStatusName} />
             </Box>
             <Box display={"flex"} flexDirection={"column"} gap={"8px"}>
-              <Typography>
-                <Typography component={"span"} fontWeight={"medium"}>
-                  Empresa:{" "}
+              {order?.user?.corporate_name && (
+                <Typography>
+                  <Typography component={"span"} fontWeight={"medium"}>
+                    Empresa:{" "}
+                  </Typography>
+                  {order?.user?.corporate_name}
                 </Typography>
-                {order.corporateName}
-              </Typography>
+              )}
               <Typography>
                 <Typography component={"span"} fontWeight={"medium"}>
-                  Representante:
+                  Contratante:
                 </Typography>{" "}
                 {order.user.name}
               </Typography>
@@ -112,9 +116,9 @@ const PedidoPage = ({ order }: { order: Order | null }) => {
               </Typography>
               <Typography>
                 <Typography component={"span"} fontWeight={"medium"}>
-                  Ramal:
+                  Documento:
                 </Typography>{" "}
-                {order.user.ramal}
+                {order.user.document}
               </Typography>
             </Box>
           </Box>
@@ -202,7 +206,53 @@ const PedidoPage = ({ order }: { order: Order | null }) => {
                 <Typography component={"span"} fontWeight={"medium"}>
                   Observações:
                 </Typography>{" "}
-                {order.address.obs || "N/A"}
+                {order.address.description || "N/A"}
+              </Typography>
+            </Box>
+          </Box>
+        </section>
+        <section>
+          <Typography variant="title3" fontWeight={"medium"}>
+            Endereço de Cobrança
+          </Typography>
+          <Box display={"flex"} minWidth={"355px"} gap={"120px"}>
+            <Box display={"flex"} gap={"8px"} flexDirection={"column"}>
+              <Typography minWidth={"355px"}>
+                <Typography component={"span"} fontWeight={"medium"}>
+                  Endereço:
+                </Typography>{" "}
+                {order.payment_address?.street}
+              </Typography>
+
+              <Typography minWidth={"355px"}>
+                <Typography component={"span"} fontWeight={"medium"}>
+                  Bairro:
+                </Typography>{" "}
+                {order.payment_address?.district}
+              </Typography>
+
+              <Typography>
+                <Typography component={"span"} fontWeight={"medium"}>
+                  Cidade:
+                </Typography>{" "}
+                {order.payment_address?.city}
+              </Typography>
+            </Box>
+
+            <Box display={"flex"} gap={"8px"} flexDirection={"column"}>
+              <Typography>
+                <Typography component={"span"} fontWeight={"medium"}>
+                  CEP:
+                </Typography>{" "}
+                {order.payment_address?.cep}
+              </Typography>
+              <Typography
+                sx={{ wordWrap: "break-word", wordBreak: "break-all" }}
+              >
+                <Typography component={"span"} fontWeight={"medium"}>
+                  Observações:
+                </Typography>{" "}
+                {order.payment_address?.description || "N/A"}
               </Typography>
             </Box>
           </Box>
@@ -225,17 +275,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       where: {
         code: context.params?.id as string,
       },
-
-      /*include: {
-        enterprise: {
-          include: {
-            users: true,
+      include: {
+        address: {
+          select: {
+            street: true,
+            district: true,
+            city: true,
+            cep: true,
+            description: true,
           },
         },
-        address: true,
-      },*/
+        payment_address: {
+          select: {
+            street: true,
+            district: true,
+            city: true,
+            cep: true,
+            description: true,
+          },
+        },
+        user: true,
+        enterprise: true,
+      },
     });
     console.log(order);
+    const user_document = order?.user?.cpf || order?.enterprise?.cnpj;
+    const user_phone = order?.user?.phone || order?.enterprise?.phone;
     return {
       props: {
         order: {
@@ -244,27 +309,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           status: order?.status,
           createdAt: order?.created_at?.toISOString(),
           type: order?.type,
-          corporateName: "QUALQUER",
           total: order?.total,
           paymentForm: order?.payment_form,
           items: order?.items,
           user: {
-            name: "QUALQUER", //order?.enterprise.users.name,
-            email: "QUALQUER", //order?.enterprise.users.email,
-            phone: "QUALQUER", //order?.enterprise.phone,
-            ramal: "QUALQUER", //order?.enterprise.ramal,
+            name: order?.user?.name,
+            corporate_name: order?.enterprise?.corporate_name || null,
+            email: order?.user?.email,
+            phone: user_phone,
+            document: user_document,
           },
-          address: {
-            street: "QUALQUER", //order?.address.street,
-            district: "QUALQUER", //order?.address.district,
-            city: "QUALQUER", //order?.address.city,
-            cep: "QUALQUER", //order?.address.cep,
-            obs: "QUALQUER", //order?.address.description,
-          },
+          payment_address: order?.payment_address,
+          address: order?.address,
         },
       },
     };
   } catch (err) {
+    console.log(err);
     return {
       props: {
         order: null,

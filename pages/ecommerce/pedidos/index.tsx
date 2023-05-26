@@ -132,23 +132,24 @@ export const getServerSideProps: GetServerSideProps = async () => {
       select: {
         code: true,
         id: true,
-        users: true,
+        user: true,
         created_at: true,
         payment_form: true,
         status: true,
         total: true,
+        enterprise: true,
         
       },
       orderBy: {
         created_at: "desc",
       },
     });
-   
+   console.log(requests);
     const rowsGroup = requests.map<OrdersDataGridRowsProps>((request) => ({
       id: request.id,
       code: request.code,
       date: request.created_at?.toISOString() || "",
-      client: request?.users?.name || 'USUARIO EXCLUIDO',
+      client: request?.enterprise?.corporate_name || request?.user?.name || 'USUARIO EXCLUIDO',
       payment: request.payment_form,
       total: request.total,
       status: request.status || "",
