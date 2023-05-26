@@ -235,6 +235,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         address: true,
       },*/
     });
+    console.log(order);
     return {
       props: {
         order: {

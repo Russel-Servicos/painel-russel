@@ -266,29 +266,30 @@ model so_products {
 }
 
 model so_requests {
-  id                    Int        @id @default(autoincrement())
-  delivery_date         DateTime?  @db.Date
-  status                String?    @default("created") @db.VarChar(30)
-  created_at            DateTime?  @default(now()) @db.Timestamp(0)
+  id                    Int              @id @default(autoincrement())
+  delivery_date         DateTime?        @db.Date
+  status                String?          @default("created") @db.VarChar(30)
+  created_at            DateTime?        @default(now()) @db.Timestamp(0)
   address_id            Int
+  payment_address_id    Int?
   payment_form          Int
-  code                  String     @db.VarChar(20)
-  user_id               BigInt     @db.UnsignedBigInt
+  code                  String           @db.VarChar(20)
+  user_id               BigInt           @db.UnsignedBigInt
   items                 Json?
-  discount              Float?     @default(0.00) @db.Float
-  taxa                  Float?     @default(0.00) @db.Float
-  total                 Float      @default(0.00) @db.Float
-  type                  String?    @db.VarChar(10)
-  sign_url              String?    @db.VarChar(250)
-  due_date              DateTime?  @db.Date
+  discount              Float?           @default(0.00) @db.Float
+  taxa                  Float?           @default(0.00) @db.Float
+  total                 Float            @default(0.00) @db.Float
+  type                  String?          @db.VarChar(10)
+  sign_url              String?          @db.VarChar(250)
+  due_date              DateTime?        @db.Date
   due_day               Int
-  payment_date          DateTime?  @db.DateTime(0)
-  gateway_boleto_qrcode String?    @db.VarChar(250)
-  gateway_barcode       String?    @db.VarChar(250)
-  recurring_transaction Int?       @default(0)
+  payment_date          DateTime?        @db.DateTime(0)
+  gateway_boleto_qrcode String?          @db.VarChar(250)
+  gateway_barcode       String?          @db.VarChar(250)
+  recurring_transaction Int?             @default(0)
   so_itens              so_itens[]
-  users                 users?      @relation(fields: [user_id], references: [id]) 
-  
+  users                 users?           @relation(fields: [user_id], references: [id])
+  payment_address       users_addresses? @relation(fields: [payment_address_id], references: [id])
 }
 
 model so_taxes {
@@ -328,31 +329,30 @@ model uploads_folders {
 
 model users {
   id                BigInt              @id @default(autoincrement()) @db.UnsignedBigInt
-  cpf               String?              @db.VarChar(11)
-  role              String?              @db.VarChar(15)
+  cpf               String?             @db.VarChar(11)
+  role              String?             @db.VarChar(15)
   pin               Int?
   type              Int?                @default(1)
   code              String?             @db.VarChar(20)
-  name              String?              @db.VarChar(50)
-  email             String?              @db.VarChar(70)
+  name              String?             @db.VarChar(50)
+  email             String?             @db.VarChar(70)
   lang              String?             @db.VarChar(5)
   image             String?             @db.VarChar(100)
-  status            Status             
+  status            Status
   privacy           String?             @default("public") @db.VarChar(10)
   credit            Int?                @default(0)
-  password          String?              @db.VarChar(62)
-  accept_terms      String?              @default("off") @db.VarChar(3)
+  password          String?             @db.VarChar(62)
+  accept_terms      String?             @default("off") @db.VarChar(3)
   email_marketing   String?             @default("off") @db.VarChar(3)
-  theme             String?              @default("black") @db.VarChar(10)
-  timezone          String?              @default("America/Sao_Paulo") @db.VarChar(50)
+  theme             String?             @default("black") @db.VarChar(10)
+  timezone          String?             @default("America/Sao_Paulo") @db.VarChar(50)
   autobiography     String?             @db.VarChar(250)
-  created_in        DateTime?            @default(now()) @db.DateTime(0)
+  created_in        DateTime?           @default(now()) @db.DateTime(0)
   users_addresses   users_addresses[]
   users_cards       users_cards[]
   users_entreprises users_entreprises[]
   users_info        users_info[]
-  requests    so_requests[]
-
+  requests          so_requests[]
 }
 
 enum Status {
@@ -361,19 +361,20 @@ enum Status {
 }
 
 model users_addresses {
-  id          Int     @id @default(autoincrement())
-  id_user     BigInt  @db.UnsignedBigInt
-  cep         String  @db.VarChar(50)
-  street      String  @db.VarChar(100)
-  district    String  @db.VarChar(50)
-  city        String  @db.VarChar(50)
-  description String  @db.VarChar(100)
-  county      String? @default("BR") @db.VarChar(3)
+  id          Int           @id @default(autoincrement())
+  id_user     BigInt        @db.UnsignedBigInt
+  cep         String        @db.VarChar(50)
+  street      String        @db.VarChar(100)
+  district    String        @db.VarChar(50)
+  city        String        @db.VarChar(50)
+  description String        @db.VarChar(100)
+  county      String?       @default("BR") @db.VarChar(3)
   number      Int
-  complement  String  @db.VarChar(100)
-  reference   String  @db.VarChar(100)
-  state       String  @db.VarChar(25)
-  users       users   @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_addresses_ibfk_1")
+  complement  String        @db.VarChar(100)
+  reference   String        @db.VarChar(100)
+  state       String        @db.VarChar(25)
+  users       users         @relation(fields: [id_user], references: [id], onDelete: Cascade, map: "users_addresses_ibfk_1")
+  so_requests so_requests[]
 
   @@index([id_user], map: "id_user")
 }
@@ -397,7 +398,7 @@ model users_entreprises {
   phone              String? @db.VarChar(20)
   ramal              String? @db.VarChar(10)
   email              String? @db.VarChar(100)
-  id_user            BigInt  @db.UnsignedBigInt @unique
+  id_user            BigInt  @unique @db.UnsignedBigInt
   corporate_name     String  @db.VarChar(50)
   fantasy_name       String  @db.VarChar(50)
   email_verification Int?    @default(0)
@@ -419,19 +420,20 @@ model users_info {
 
   @@index([id_user], map: "id_user")
 }
+
 model account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   user user @relation(fields: [userId], references: [id], onDelete: Cascade)
 
