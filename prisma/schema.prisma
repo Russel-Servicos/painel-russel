@@ -275,7 +275,7 @@ model so_requests {
   payment_form          Int
   code                  String             @db.VarChar(20)
   user_id               BigInt             @db.UnsignedBigInt
-  items                 Json?
+  items                 String?            @db.VarChar(250)
   discount              Float?             @default(0.00) @db.Float
   taxa                  Float?             @default(0.00) @db.Float
   total                 Float              @default(0.00) @db.Float

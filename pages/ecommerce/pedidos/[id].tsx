@@ -25,12 +25,14 @@ type Order = {
   createdAt: string;
   total: string;
   paymentForm: number;
-  items: {
-    qtd: number;
-    name: string;
-    price: number;
-    description: string;
-  }[];
+  items:
+    | {
+        qtd: number;
+        name: string;
+        price: number;
+        description: string;
+      }[]
+    | string;
   user: {
     name: string;
     corporate_name?: string;
@@ -50,7 +52,35 @@ const PedidoPage = ({ order }: { order: Order | null }) => {
       </>
     );
   }
+  function treat(str: any) {
+    // TODO: escape %x75 4HEXDIG ?? chars
+    return str
+      .replace(/\n/g,' ');
+  }
   const creationDate = new Date(order?.createdAt);
+  const order_items = order.items;
+
+  const treated = treat(order_items);
+  
+  const json_items = JSON.parse(treated as string);
+
+ 
+  /*const descriptions = json_items?.map((element: any) => element.description);
+  console.log('descs', descriptions)
+
+  const description_treatment = (item_description: string) => {
+    const details_list = item_description.split(',')
+    
+    const bold_key = details_list.map((detail: string) => {
+      const detail_array = detail.split(':');
+      return detail_array[0] + ': ' + detail_array[1]
+    })
+
+    console.log('bold', bold_key)
+    
+  }
+
+  description_treatment(descriptions[0]);*/
 
   return (
     <MainContainer>
@@ -175,21 +205,21 @@ const PedidoPage = ({ order }: { order: Order | null }) => {
                 <Typography component={"span"} fontWeight={"medium"}>
                   Endereço:
                 </Typography>{" "}
-                {order.address.street}
+                {order?.address?.street}
               </Typography>
 
               <Typography minWidth={"355px"}>
                 <Typography component={"span"} fontWeight={"medium"}>
                   Bairro:
                 </Typography>{" "}
-                {order.address.district}
+                {order?.address?.district}
               </Typography>
 
               <Typography>
                 <Typography component={"span"} fontWeight={"medium"}>
                   Cidade:
                 </Typography>{" "}
-                {order.address.city}
+                {order?.address?.city}
               </Typography>
             </Box>
 
@@ -198,7 +228,7 @@ const PedidoPage = ({ order }: { order: Order | null }) => {
                 <Typography component={"span"} fontWeight={"medium"}>
                   CEP:
                 </Typography>{" "}
-                {order.address.cep}
+                {order?.address?.cep}
               </Typography>
               <Typography
                 sx={{ wordWrap: "break-word", wordBreak: "break-all" }}
@@ -206,7 +236,7 @@ const PedidoPage = ({ order }: { order: Order | null }) => {
                 <Typography component={"span"} fontWeight={"medium"}>
                   Observações:
                 </Typography>{" "}
-                {order.address.description || "N/A"}
+                {order?.address?.description || "N/A"}
               </Typography>
             </Box>
           </Box>
@@ -261,7 +291,7 @@ const PedidoPage = ({ order }: { order: Order | null }) => {
           <Typography variant={"title3"} fontWeight={"medium"}>
             Itens do pedido
           </Typography>
-          <OrderDetailsTable items={order.items} />
+          <OrderDetailsTable items={json_items} />
         </section>
       </Box>
     </MainContainer>
@@ -298,9 +328,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         enterprise: true,
       },
     });
-    console.log(order);
-    const user_document = order?.user?.cpf || order?.enterprise?.cnpj;
-    const user_phone = order?.user?.phone || order?.enterprise?.phone;
+    const user_document = order?.user?.cpf || order?.enterprise?.cnpj || 'Documento excluido';
+    const user_phone =
+      order?.user?.phone || order?.enterprise?.phone || "Telefone excluido";
     return {
       props: {
         order: {
@@ -311,11 +341,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           type: order?.type,
           total: order?.total,
           paymentForm: order?.payment_form,
-          items: order?.items,
+          items: order?.items as string,
           user: {
-            name: order?.user?.name,
+            name: order?.user?.name || "Usuario excluido",
             corporate_name: order?.enterprise?.corporate_name || null,
-            email: order?.user?.email,
+            email: order?.user?.email || "Email excluido",
             phone: user_phone,
             document: user_document,
           },

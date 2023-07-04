@@ -12,15 +12,52 @@ import getDuration from "../services/getDuration";
 import theme from "../styles/theme";
 
 interface Props {
-  items: Array<{
+  items: {
     qtd: number;
     name: string;
     price: number;
     description: string;
-  }>;
+  }[];
 }
 
 const OrderDetailsTable = ({ items }: Props) => {
+
+  const description_treatment = (item_description: string) => {
+    const details_list = item_description.split(";");
+    const details_separate = details_list.map(item => item.split(':'))
+
+    const render_bold = details_separate.map(item => {
+      if (item.length < 2) {
+        return (
+          <p key={item[0]} style={{ textAlign: "left" }}>
+           {item[0]}
+          </p>
+        );
+      }
+      return (
+        <>
+          <p style={{ textAlign: "left" }}>
+            <b>{item[0]}</b>: {item[1]}
+          </p>
+        </>
+      );
+    });
+
+    /*const unify = details_separate.forEach((item, index) => {
+
+      if (details_separate[index + 1]?.length < 2) {
+        console.log('nextunify', item)
+        const newitem = item[1] + ',' + details_separate[index + 1][0];
+        console.log('new', newitem)
+      }
+      if (item.length < 2) {
+        console.log('needsunify', item)
+      }
+    });
+    console.log('ajustada', unify)*/
+    return render_bold;
+  };
+
   return (
     <TableContainer sx={{ borderRadius: theme.spacing(2), marginTop: "16px" }}>
       <Table
@@ -37,23 +74,21 @@ const OrderDetailsTable = ({ items }: Props) => {
       >
         <TableHead>
           <TableRow>
-            <TableCell align="center">Quantidade</TableCell>
+            <TableCell align="left">Quantidade</TableCell>
             <TableCell>Profissional/PRODUTO</TableCell>
-            <TableCell align="center">Duração/INICIO</TableCell>
-            <TableCell align="center">Valor</TableCell>
+            <TableCell align="left">Duração/INICIO</TableCell>
+            <TableCell align="right">Valor</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item, index) => (
+          {(items as any[]).map((item: any, index: number) => (
             <TableRow key={index}>
-              <TableCell align="center" width={"176px"}>
-                {item.qtd}
-              </TableCell>
+              <TableCell align="center" >{item.qtd}</TableCell>
               <TableCell>{convertUnicode(item.name)}</TableCell>
-              <TableCell align="center" width={"176px"}>
-                {getDuration(item.description)}
+              <TableCell align="left"  width={"100%"}>
+                {description_treatment(item.description)}
               </TableCell>
-              <TableCell align="center" width={"160px"}>
+              <TableCell align="right" >
                 R${item.price}
               </TableCell>
             </TableRow>
