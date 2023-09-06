@@ -1,6 +1,6 @@
 # Painel Russel Serviços
 
-## Rodando o projeto
+## Rodando o projetoo
 
 - Crie um arquivo .env seguindo o exemplo do arquivo ".env.example"
 
