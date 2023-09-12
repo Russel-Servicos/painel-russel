@@ -1,5 +1,11 @@
 import { Box, SelectChangeEvent, Typography } from "@mui/material";
-import { GetServerSideProps, GetStaticProps, InferGetServerSidePropsType, InferGetStaticPropsType, NextPage } from "next";
+import {
+  GetServerSideProps,
+  GetStaticProps,
+  InferGetServerSidePropsType,
+  InferGetStaticPropsType,
+  NextPage,
+} from "next";
 import React from "react";
 import { useState } from "react";
 import Button from "../../../components/Button";
@@ -15,8 +21,9 @@ import { GridSelectionModel } from "@mui/x-data-grid";
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 
-const Pedidos: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ rows }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-
+const Pedidos: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({ rows }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [rowsState, setRowsState] = useState([...rows]);
   const [search, setSearch] = useState("");
   const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
@@ -39,13 +46,13 @@ const Pedidos: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
       setLoading(false);
     }
   };
-   const onFiltersChange = (filters: {
-     date?: string;
-     status?: string;
-     payment?: string;
-   }) => {
-     //buscar no banco items que correspondem aos filtros passados
-   };
+  const onFiltersChange = (filters: {
+    date?: string;
+    status?: string;
+    payment?: string;
+  }) => {
+    //buscar no banco items que correspondem aos filtros passados
+  };
 
   return (
     <MainContainer>
@@ -113,13 +120,15 @@ const Pedidos: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> 
           </Button>
         </Box>
 
-        {rows && <OrdersDataGrid
-          rows={rowsState}
-          selectionModel={selectionModel}
-          onSelectionModelChange={(newSelectionModel) =>
-            setSelectionModel(newSelectionModel)
-          }
-        />}
+        {rows && (
+          <OrdersDataGrid
+            rows={rowsState}
+            selectionModel={selectionModel}
+            onSelectionModelChange={(newSelectionModel) =>
+              setSelectionModel(newSelectionModel)
+            }
+          />
+        )}
       </Box>
     </MainContainer>
   );
@@ -138,23 +147,24 @@ export const getServerSideProps: GetServerSideProps = async () => {
         status: true,
         total: true,
         enterprise: true,
-        
       },
       orderBy: {
         created_at: "desc",
       },
     });
-   console.log(requests);
+    console.log(requests);
     const rowsGroup = requests.map<OrdersDataGridRowsProps>((request) => ({
       id: request.id,
       code: request.code,
       date: request.created_at?.toISOString() || "",
-      client: request?.enterprise?.corporate_name || request?.user?.name || 'USUARIO EXCLUIDO',
+      client:
+        request?.enterprise?.corporate_name ||
+        request?.user?.name ||
+        "USUARIO EXCLUIDO",
       payment: request.payment_form,
       total: request.total,
       status: request.status || "",
     }));
-
 
     await prisma.$disconnect();
     const rows: Array<OrdersDataGridRowsProps> | [] = rowsGroup;
